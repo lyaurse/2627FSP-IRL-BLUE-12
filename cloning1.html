@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA ® — Minimalist Editorial Experience</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Instrument Serif & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Custom Design Tokens & Exact Specs */
+    :root {
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Inter', sans-serif;
+      --bg-fallback: hsl(201, 100%, 13%);
+      --text-muted: hsl(215, 25%, 32%);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-fallback);
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    .font-display {
+      font-family: var(--font-display);
+    }
+
+    /* Exact H1 Typography Specs */
+    .hero-heading {
+      font-family: var(--font-display);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -2.46px;
+    }
+
+    .hero-heading em {
+      font-style: italic;
+      font-weight: 400;
+      letter-spacing: -2.0px;
+    }
+
+    /* Staggered Entrance Animations */
+    @keyframes fade-rise {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-rise-1 {
+      animation: fade-rise 0.8s ease-out 0s both;
+    }
+
+    .animate-fade-rise-2 {
+      animation: fade-rise 0.8s ease-out 0.2s both;
+    }
+
+    .animate-fade-rise-3 {
+      animation: fade-rise 0.8s ease-out 0.4s both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-fade-rise-1,
+      .animate-fade-rise-2,
+      .animate-fade-rise-3 {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    /* Shared Pill Button Component Styling */
+    .pill-btn {
+      background-color: #000000;
+      color: #ffffff;
+      border-radius: 9999px;
+      font-family: var(--font-body);
+      font-weight: 500;
+      transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .pill-btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .pill-btn-sm {
+      padding: 10px 24px;
+      font-size: 14px;
+    }
+
+    .pill-btn-hero {
+      padding: 20px 56px;
+      font-size: 16px;
+    }
+
+    /* Custom Glass Panel for enhanced visual depth */
+    .editorial-glass {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body class="relative min-h-screen text-slate-900 antialiased selection:bg-black selection:text-white">
+
+  <!-- ================= BACKGROUND VIDEO LAYER ================= -->
+  <div class="fixed inset-0 w-full h-full -z-10 overflow-hidden" style="background-color: var(--bg-fallback);">
+    <!-- Full-bleed background video -->
+    <video
+      id="bgVideo"
+      autoplay
+      muted
+      loop
+      playsinline
+      poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' fill='%23002f43'></svg>"
+      class="absolute top-0 left-0 w-full h-full object-cover object-center transition-opacity duration-1000 opacity-0"
+      onloadeddata="this.classList.remove('opacity-0')"
+      onerror="console.warn('Video failed to load. Fallback background active.');"
+    >
+      <source src="https://designerstephen.github.io/public-assets/videos/serene-art-hero.mp4" type="video/mp4">
+    </video>
+
+    <!-- Dark overlay (approx 20% opacity) for enhanced text contrast -->
+    <div class="absolute inset-0 bg-black/20 backdrop-brightness-95 pointer-events-none"></div>
+  </div>
+
+  <!-- ================= LAYOUT CONTAINER ================= -->
+  <div class="relative z-10 flex flex-col min-h-[100svh]">
+    
+    <!-- HEADER / NAVIGATION BAR -->
+    <header class="w-full">
+      <nav class="max-w-[1280px] mx-auto px-8 py-6 grid grid-cols-2 md:grid-cols-3 items-center">
+        
+        <!-- Left Column: Brand Logo -->
+        <div class="flex items-center justify-start">
+          <a href="#" class="font-display text-[30px] leading-none text-slate-900 tracking-tight flex items-baseline gap-0.5 group">
+            <span class="transition-opacity group-hover:opacity-80">AURA</span>
+            <sup class="text-[12px] font-sans font-medium tracking-normal text-slate-700">®</sup>
+          </a>
+        </div>
+
+        <!-- Center Column: Navigation Links (Hidden on Mobile) -->
+        <div class="hidden md:flex items-center justify-center gap-[40px]">
+          <a href="#collections" onclick="showToast('Exploring Collections')" class="text-[14px] font-medium text-slate-900 hover:text-black transition-colors duration-200 py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-black hover:after:w-full after:transition-all">Collections</a>
+          <a href="#story" onclick="showToast('Our Heritage & Story')" class="text-[14px] font-medium text-slate-900 hover:text-black transition-colors duration-200 py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-black hover:after:w-full after:transition-all">Story</a>
+          <a href="#editorial" onclick="showToast('Editorial Journal')" class="text-[14px] font-medium text-slate-900 hover:text-black transition-colors duration-200 py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-black hover:after:w-full after:transition-all">Editorial</a>
+          <a href="#contact" onclick="showToast('Concierge & Contact')" class="text-[14px] font-medium text-slate-900 hover:text-black transition-colors duration-200 py-1 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-black hover:after:w-full after:transition-all">Contact</a>
+        </div>
+
+        <!-- Right Column: CTA Button -->
+        <div class="flex items-center justify-end">
+          <button onclick="openModal()" class="pill-btn pill-btn-sm">
+            Find my dream
+          </button>
+        </div>
+
+      </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <main class="flex-grow flex items-center justify-center px-6 py-12">
+      <section class="max-w-[1280px] w-full mx-auto flex flex-col items-center text-center">
+        
+        <!-- Editorial Glass Backdrop Wrapper for ultra-premium feel -->
+        <div class="editorial-glass rounded-3xl p-8 sm:p-12 md:p-16 max-w-[980px] w-full shadow-2xl flex flex-col items-center">
+          
+          <!-- H1 Main Heading -->
+          <h1 class="hero-heading text-[48px] md:text-[80px] text-slate-900 animate-fade-rise-1">
+            Where <em>Sanctuary</em> Meets<br class="hidden sm:inline"> Extraordinary Living
+          </h1>
+
+          <!-- Supporting Paragraph -->
+          <p class="mt-6 text-[18px] leading-[1.625] text-[hsl(215,25%,32%)] max-w-[670px] font-normal animate-fade-rise-2">
+            Immerse yourself in curated architectural masterpieces designed for those who appreciate the poetry of space, light, and timeless elegance.
+          </p>
+
+          <!-- Main CTA Button -->
+          <div class="mt-[48px] animate-fade-rise-3">
+            <button onclick="openModal()" class="pill-btn pill-btn-hero group">
+              <span>Find my dream</span>
+              <svg class="w-4 h-4 ml-3 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+    </main>
+
+    <!-- FOOTER / MINIMALIST ACCENT -->
+    <footer class="w-full py-6 px-8 text-center text-[12px] font-medium tracking-widest text-slate-700 uppercase">
+      © 2026 AURA ARCHITECTURAL STUDIO — ALL RIGHTS RESERVED
+    </footer>
+
+  </div>
+
+  <!-- INTERACTIVE MODAL COMPONENT -->
+  <div id="dreamModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="editorial-glass rounded-2xl p-8 max-w-md w-full shadow-2xl border border-white/40 transform scale-95 transition-transform duration-300" id="modalContent">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-display text-3xl text-slate-900">Curate Your Dream</h3>
+        <button onclick="closeModal()" class="text-slate-500 hover:text-black p-1 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <p class="text-[14px] text-slate-600 mb-6 leading-relaxed">
+        Let our private client advisors assist you in discovering bespoke sanctuaries tailored to your lifestyle.
+      </p>
+      <form onsubmit="handleFormSubmit(event)" class="space-y-4">
+        <div>
+          <input type="text" required placeholder="Your Name" class="w-full px-4 py-3 rounded-full bg-white/80 border border-slate-200 text-slate-900 text-[14px] focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+        <div>
+          <input type="email" required placeholder="Preferred Email" class="w-full px-4 py-3 rounded-full bg-white/80 border border-slate-200 text-slate-900 text-[14px] focus:outline-none focus:ring-2 focus:ring-black">
+        </div>
+        <button type="submit" class="w-full pill-btn pill-btn-sm py-3 mt-2">
+          Request Consultation
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-black text-white text-[13px] px-5 py-3 rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 transform translate-y-2">
+    <span id="toastMsg">Action triggered</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
+  <script>
+    // Handle modal toggle
+    function openModal() {
+      const modal = document.getElementById('dreamModal');
+      const modalContent = document.getElementById('modalContent');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modalContent.classList.remove('scale-95');
+      modalContent.classList.add('scale-100');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('dreamModal');
+      const modalContent = document.getElementById('modalContent');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modalContent.classList.remove('scale-100');
+      modalContent.classList.add('scale-95');
+    }
+
+    // Close modal when clicking background overlay
+    document.getElementById('dreamModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Handle interactive Toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+      
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+      }, 3000);
+    }
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      closeModal();
+      showToast('Thank you. A concierge officer will reach out shortly.');
+    }
+  </script>
+</body>
+</html>
