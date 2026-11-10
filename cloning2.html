@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STUDIO N° 01 — The Maker's Journal & Precision Gauge</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Newsreader & Courier Prime -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#EFE9DD',
+            'paper-dark': '#E5DED0',
+            ink: '#141C2B',
+            'ink-secondary': '#4A5364',
+            'ink-muted': '#767E8C',
+            'ink-blue': '#2C4A8F',
+          },
+          fontFamily: {
+            serif: ['Newsreader', 'serif'],
+            mono: ['"Courier Prime"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Global Base Reset & Custom Constraints */
+    :root {
+      --hairline: rgba(20, 28, 43, 0.16);
+      --color-paper: #EFE9DD;
+      --color-paper-dark: #E5DED0;
+      --color-ink: #141C2B;
+      --color-ink-secondary: #4A5364;
+      --color-ink-muted: #767E8C;
+      --color-ink-blue: #2C4A8F;
+    }
+
+    * {
+      border-radius: 0 !important; /* STRICT REQUIREMENT: No rounded corners anywhere */
+      box-shadow: none;
+    }
+
+    body {
+      background-color: var(--color-paper);
+      color: var(--color-ink);
+      font-family: 'Courier Prime', monospace;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Hairline borders */
+    .border-hairline {
+      border-color: var(--hairline);
+    }
+    .border-b-hairline {
+      border-bottom: 1px solid var(--hairline);
+    }
+    .border-t-hairline {
+      border-top: 1px solid var(--hairline);
+    }
+    .border-r-hairline {
+      border-right: 1px solid var(--hairline);
+    }
+    .border-l-hairline {
+      border-left: 1px solid var(--hairline);
+    }
+
+    /* Typography Utilities */
+    .font-newsreader {
+      font-family: 'Newsreader', serif;
+      letter-spacing: -0.02em;
+    }
+
+    /* Buttons Styling */
+    .btn-square-primary {
+      background-color: var(--color-ink);
+      color: var(--color-paper);
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      border: 1px solid var(--color-ink);
+      transition: background-color 0.2s ease, color 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-square-primary:hover {
+      background-color: var(--color-ink-blue);
+      border-color: var(--color-ink-blue);
+      color: #ffffff;
+    }
+
+    .btn-square-secondary {
+      background-color: transparent;
+      color: var(--color-ink);
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      border: 1px solid var(--hairline);
+      transition: border-color 0.2s ease, color 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-square-secondary:hover {
+      border-color: var(--color-ink-blue);
+      color: var(--color-ink-blue);
+    }
+
+    /* Variant Picker Button Styles */
+    .variant-btn {
+      background: transparent;
+      border: 1px solid var(--hairline);
+      color: var(--color-ink-secondary);
+      font-family: 'Courier Prime', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 10px 20px;
+      transition: all 0.2s ease;
+    }
+    .variant-btn[aria-pressed="true"] {
+      border-color: var(--color-ink-blue);
+      color: var(--color-ink-blue);
+      font-weight: 700;
+      background: rgba(44, 74, 143, 0.04);
+    }
+
+    /* Oversized Wordmark Character Container */
+    .wordmark-char {
+      display: inline-block;
+      transition: transform 0.05s linear;
+      will-change: transform;
+    }
+
+    /* Persistent Single Travelling Product Cut-Out */
+    #travelling-product {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      height: 380px;
+      z-index: 40;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transform-origin: center center;
+      filter: drop-shadow(8px 16px 12px rgba(20, 28, 43, 0.18));
+    }
+
+    @media (max-width: 768px) {
+      #travelling-product {
+        width: 190px;
+        height: 260px;
+      }
+    }
+
+    /* SVG Stroke Animation Initial State */
+    .draw-path {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      transition: stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .draw-path.drawn {
+      stroke-dashoffset: 0;
+    }
+
+    /* Tabular numbers for specs */
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Accessible Motion Override */
+    @media (prefers-reduced-motion: reduce) {
+      #travelling-product {
+        display: none !important;
+      }
+      .draw-path {
+        stroke-dashoffset: 0 !important;
+        transition: none !important;
+      }
+      .wordmark-char {
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="relative">
+
+  <!-- ================= PERSISTENT SINGLE TRAVELLING PRODUCT ================= -->
+  <div id="travelling-product" aria-hidden="true">
+    <!-- Clean Cut-Out SVG Representation of the Solid Brass & Walnut Precision Ruling Gauge -->
+    <svg viewBox="0 0 200 280" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full drop-shadow-md">
+      <!-- Wooden Stock -->
+      <rect x="40" y="80" width="120" height="35" fill="#5C4033" stroke="#141C2B" stroke-width="2.5"/>
+      <rect x="42" y="82" width="116" height="3" fill="#8B5A2B"/>
+      <!-- Brass Inlay Strip -->
+      <rect x="40" y="115" width="120" height="8" fill="#D4AF37" stroke="#141C2B" stroke-width="1.5"/>
+      <!-- Main Brass Beam -->
+      <rect x="88" y="10" width="24" height="250" fill="#E6CA65" stroke="#141C2B" stroke-width="2.5"/>
+      <!-- Beam Vernier Scale Lines -->
+      <line x1="104" y1="20" x2="110" y2="20" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="100" y1="30" x2="110" y2="30" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="104" y1="40" x2="110" y2="40" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="100" y1="50" x2="110" y2="50" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="104" y1="60" x2="110" y2="60" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="100" y1="70" x2="110" y2="70" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="104" y1="130" x2="110" y2="130" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="100" y1="140" x2="110" y2="140" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="104" y1="150" x2="110" y2="150" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="100" y1="160" x2="110" y2="160" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="104" y1="170" x2="110" y2="170" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="100" y1="180" x2="110" y2="180" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="104" y1="190" x2="110" y2="190" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="100" y1="200" x2="110" y2="200" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="104" y1="210" x2="110" y2="210" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="100" y1="220" x2="110" y2="220" stroke="#141C2B" stroke-width="1.5"/>
+      <line x1="104" y1="230" x2="110" y2="230" stroke="#141C2B" stroke-width="1.5"/>
+
+      <!-- Brass Thumbscrew Lock Knob -->
+      <circle cx="100" cy="97" r="14" fill="#D4AF37" stroke="#141C2B" stroke-width="2.5"/>
+      <circle cx="100" cy="97" r="9" fill="#C59B27" stroke="#141C2B" stroke-width="1"/>
+      <path d="M96 97 H104 M100 93 V101" stroke="#141C2B" stroke-width="2"/>
+
+      <!-- Micro-Marking Wheel at Tip -->
+      <circle cx="100" cy="254" r="6" fill="#2C4A8F" stroke="#141C2B" stroke-width="2"/>
+      <circle cx="100" cy="254" r="2" fill="#EFE9DD"/>
+    </svg>
+  </div>
+
+  <!-- ================= NAVIGATION BAR ================= -->
+  <header class="fixed top-0 left-0 w-full h-[58px] z-50 bg-[#EFE9DD]/80 backdrop-blur-[12px] border-b-hairline px-6 lg:px-16 flex items-center justify-between">
+    <!-- Left Brand Wordmark -->
+    <a href="#" class="font-newsreader text-[19px] text-ink font-semibold tracking-tight">
+      STUDIO N° 01<span class="text-ink-blue font-bold">.</span>
+    </a>
+
+    <!-- Center Navigation Links -->
+    <nav class="hidden md:flex items-center gap-10 font-mono text-[11px] tracking-[0.08em] text-ink-secondary uppercase">
+      <a href="#argument" class="hover:text-ink-blue transition-colors">01 / Argument</a>
+      <a href="#demonstration" class="hover:text-ink-blue transition-colors">02 / Function</a>
+      <a href="#materials" class="hover:text-ink-blue transition-colors">03 / Craft</a>
+      <a href="#measurements" class="hover:text-ink-blue transition-colors">04 / Specs</a>
+    </nav>
+
+    <!-- Right Action CTA -->
+    <button onclick="triggerAcquireModal()" class="btn-square-primary py-2 px-5 text-[11px]">
+      Acquire — $140
+    </button>
+  </header>
+
+  <!-- Main Scroll Container -->
+  <div class="pt-[58px] w-full">
+
+    <!-- ================= SECTION 1: HERO ================= -->
+    <section id="hero" class="relative min-h-[calc(100svh-58px)] bg-paper-dark border-b-hairline flex flex-col justify-between overflow-hidden">
+      
+      <!-- Top Content Block -->
+      <div class="px-6 lg:px-16 pt-12 lg:pt-20 max-w-[100vw] lg:max-w-[46vw] z-10 flex flex-col items-start">
+        
+        <!-- Kicker -->
+        <span class="font-mono text-[11px] tracking-[0.1em] text-ink-blue uppercase mb-4 font-bold">
+          ARCHIVAL STATIONERY / INSTRUMENT N° 01
+        </span>
+
+        <!-- Main Headline -->
+        <h1 class="font-newsreader text-[32px] sm:text-[44px] lg:text-[clamp(32px,4.6vw,68px)] font-normal text-ink leading-[1.05] tracking-[-0.02em] mb-6">
+          A physical instrument for <em class="italic text-ink-blue">unhurried page layout</em> and precise ruling.
+        </h1>
+
+        <!-- Supporting Copy -->
+        <p class="font-mono text-[11px] lg:text-[12px] text-ink-secondary leading-[1.9] mb-8 max-w-[540px]">
+          Milled from solid C360 brass and quartersawn English walnut. Designed to score, align, and guide graphite across heavy cotton paper with absolute repeatability.
+        </p>
+
+        <!-- Two CTA Buttons -->
+        <div class="flex flex-wrap items-center gap-4 mb-10">
+          <button onclick="triggerAcquireModal()" class="btn-square-primary">
+            Acquire Gauge — $140
+          </button>
+          <a href="#demonstration" class="btn-square-secondary">
+            Observe Function
+          </a>
+        </div>
+
+        <!-- Specifications Strip anchored above hero bottom -->
+        <div class="w-full border-t-hairline pt-4 mb-8 grid grid-cols-2 sm:grid-cols-3 gap-4 font-mono text-[11px] text-ink-muted">
+          <div>
+            <span class="block text-ink-blue text-[10px] uppercase tracking-widest">Weight</span>
+            <span class="text-ink font-medium">320 grams</span>
+          </div>
+          <div>
+            <span class="block text-ink-blue text-[10px] uppercase tracking-widest">Material</span>
+            <span class="text-ink font-medium">Brass & Walnut</span>
+          </div>
+          <div>
+            <span class="block text-ink-blue text-[10px] uppercase tracking-widest">Tolerance</span>
+            <span class="text-ink font-medium">± 0.05 mm</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Oversized Hero Wordmark (M A K E R) Baseline Anchor -->
+      <div class="w-full px-4 sm:px-8 border-t-hairline pt-2 pb-0 overflow-hidden select-none">
+        <div id="hero-wordmark" class="w-full flex justify-between items-baseline font-newsreader text-[18vw] leading-[0.72] tracking-[-0.05em] text-ink uppercase font-semibold translate-y-[12%]">
+          <span class="wordmark-char">M</span>
+          <span class="wordmark-char">A</span>
+          <span class="wordmark-char">K</span>
+          <span class="wordmark-char">E</span>
+          <span class="wordmark-char">R</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= SECTION 2: THE ARGUMENT ================= -->
+    <section id="argument" class="py-24 lg:py-36 px-6 lg:px-16 border-b-hairline bg-paper">
+      <div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+        
+        <!-- Left Column: Editorial Statement -->
+        <div class="lg:col-span-5 flex flex-col justify-start">
+          <span class="font-mono text-[11px] tracking-[0.1em] text-ink-blue uppercase mb-4 font-bold">
+            01 / THE ARGUMENT
+          </span>
+          <h2 class="font-newsreader text-[32px] sm:text-[42px] leading-[1.1] text-ink mb-6">
+            Software simplified visual composition, but it stripped away <em class="italic text-ink-blue">the tactile friction of thought.</em>
+          </h2>
+          <p class="font-mono text-[11px] lg:text-[12px] text-ink-secondary leading-[1.9]">
+            The Precision Marking Gauge was built for makers who draft by hand—notebook designers, calligraphers, architects, and typographers. It replaces plastic rulers and clumsy T-squares with an object of permanent weight and exact calibration.
+          </p>
+        </div>
+
+        <!-- Right Column: Hairline Information Rows -->
+        <div class="lg:col-span-7 border-t-hairline">
+          
+          <!-- Row 1 -->
+          <div class="py-8 border-b-hairline grid grid-cols-1 sm:grid-cols-12 gap-4 items-baseline">
+            <div class="sm:col-span-4 font-mono text-[11px] text-ink-blue uppercase tracking-wider font-bold">
+              01. MASS & BALANCE
+            </div>
+            <div class="sm:col-span-8 font-mono text-[11px] text-ink-secondary leading-[1.9]">
+              Weighted heavily in the palm so it anchors itself onto paper without requiring excessive thumb pressure.
+              <span class="block mt-2 text-ink font-bold font-mono text-[11px] sm:text-right">320 GRAMS SOLID C360</span>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="py-8 border-b-hairline grid grid-cols-1 sm:grid-cols-12 gap-4 items-baseline">
+            <div class="sm:col-span-4 font-mono text-[11px] text-ink-blue uppercase tracking-wider font-bold">
+              02. VERNIER ACCURACY
+            </div>
+            <div class="sm:col-span-8 font-mono text-[11px] text-ink-secondary leading-[1.9]">
+              Laser-etched metric and imperial scales allow setting grid margins down to 0.5 millimeter increments.
+              <span class="block mt-2 text-ink font-bold font-mono text-[11px] sm:text-right">LASER-ENGRAVED BEAM</span>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="py-8 border-b-hairline grid grid-cols-1 sm:grid-cols-12 gap-4 items-baseline">
+            <div class="sm:col-span-4 font-mono text-[11px] text-ink-blue uppercase tracking-wider font-bold">
+              03. REPEATABILITY
+            </div>
+            <div class="sm:col-span-8 font-mono text-[11px] text-ink-secondary leading-[1.9]">
+              Locking knurled thumbscrew freezes beam offset instantly. Score twenty consecutive pages with zero drift.
+              <span class="block mt-2 text-ink font-bold font-mono text-[11px] sm:text-right">KNURLED LOCK MECHANISM</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SECTION 3: PRODUCT DEMONSTRATION ================= -->
+    <section id="demonstration" class="py-24 lg:py-36 px-6 lg:px-16 border-b-hairline bg-paper-dark">
+      <div class="max-w-[1000px] mx-auto flex flex-col items-center text-center">
+        
+        <!-- Section Header -->
+        <span class="font-mono text-[11px] tracking-[0.1em] text-ink-blue uppercase mb-4 font-bold">
+          02 / FUNCTION DEMONSTRATION
+        </span>
+        <h2 class="font-newsreader text-[32px] sm:text-[46px] leading-[1.1] text-ink mb-4">
+          Executing precise <em class="italic text-ink-blue">page ruling & grid scoring.</em>
+        </h2>
+        <p class="font-mono text-[11px] lg:text-[12px] text-ink-secondary leading-[1.9] max-w-[600px] mb-10">
+          Observe the hardened steel wheel glide smoothly along the paper edge, scoring crisp baseline grids for editorial layouts.
+        </p>
+
+        <!-- Variant Picker Controls -->
+        <div class="flex flex-wrap justify-center gap-3 mb-10" role="tablist" aria-label="Layout Grid Variants">
+          <button onclick="setVariant('grid')" id="var-grid" class="variant-btn" aria-pressed="true" role="tab">
+            GRID LAYOUT (5mm)
+          </button>
+          <button onclick="setVariant('margin')" id="var-margin" class="variant-btn" aria-pressed="false" role="tab">
+            MARGIN RULE (18mm)
+          </button>
+          <button onclick="setVariant('border')" id="var-border" class="variant-btn" aria-pressed="false" role="tab">
+            EDITORIAL FRAME
+          </button>
+        </div>
+
+        <!-- Animated SVG Demonstration Panel -->
+        <div class="w-full bg-paper border border-hairline p-6 lg:p-12 mb-10 relative overflow-hidden">
+          <div class="w-full h-[320px] sm:h-[400px] flex items-center justify-center relative">
+            
+            <!-- Dynamic Function Animation Canvas -->
+            <svg id="demo-svg" class="w-full h-full" viewBox="0 0 600 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Paper Background Outline -->
+              <rect x="80" y="30" width="440" height="280" fill="#EFE9DD" stroke="#141C2B" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <text x="95" y="55" font-family="Courier Prime" font-size="10" fill="#767E8C">FOLIO 01 / COTTON SHEET</text>
+              
+              <!-- Dynamic Progressive Drawing Path -->
+              <path id="svg-draw-path" class="draw-path" d="M120 90 H480 M120 120 H480 M120 150 H480 M120 180 H480 M120 210 H480 M120 240 H480 M120 270 H480" stroke="#2C4A8F" stroke-width="1.5" stroke-linecap="square"/>
+              
+              <!-- Calibration Marks -->
+              <line x1="80" y1="90" x2="95" y2="90" stroke="#141C2B" stroke-width="2"/>
+              <line x1="80" y1="180" x2="95" y2="180" stroke="#141C2B" stroke-width="2"/>
+              <line x1="80" y1="270" x2="95" y2="270" stroke="#141C2B" stroke-width="2"/>
+            </svg>
+
+          </div>
+        </div>
+
+        <!-- Factual Variant Specs Beneath Demonstration -->
+        <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-6 border-t-hairline pt-6 text-left font-mono text-[11px]">
+          <div class="border-b sm:border-b-0 sm:border-r-hairline pb-4 sm:pb-0 pr-4">
+            <span class="block text-ink-blue uppercase tracking-widest text-[10px] mb-1">SCORING DEPTH</span>
+            <span id="fact-1" class="text-ink font-bold tabular-nums">0.12 mm Blind Indentation</span>
+          </div>
+          <div class="border-b sm:border-b-0 sm:border-r-hairline pb-4 sm:pb-0 pr-4">
+            <span class="block text-ink-blue uppercase tracking-widest text-[10px] mb-1">GRID SPACING</span>
+            <span id="fact-2" class="text-ink font-bold tabular-nums">5.0 mm Equal Intervallic</span>
+          </div>
+          <div>
+            <span class="block text-ink-blue uppercase tracking-widest text-[10px] mb-1">RECOMMENDED PAPER</span>
+            <span id="fact-3" class="text-ink font-bold tabular-nums">120gsm – 300gsm Cotton</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SECTION 4: MATERIALS & CRAFTSMANSHIP ================= -->
+    <section id="materials" class="py-24 lg:py-36 px-6 lg:px-16 border-b-hairline bg-paper">
+      <div class="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+        
+        <!-- Left Column -->
+        <div class="lg:col-span-5 flex flex-col justify-start">
+          <span class="font-mono text-[11px] tracking-[0.1em] text-ink-blue uppercase mb-4 font-bold">
+            03 / CRAFTSMANSHIP & HONESTY
+          </span>
+          <h2 class="font-newsreader text-[32px] sm:text-[42px] leading-[1.1] text-ink mb-6">
+            Machined from <em class="italic text-ink-blue">uncoated architectural metals</em> designed to age gracefully.
+          </h2>
+          <p class="font-mono text-[11px] lg:text-[12px] text-ink-secondary leading-[1.9]">
+            We select unvarnished brass and natural hardwood stock so that every instrument absorbs the subtle oils of your hand over decades, developing a rich organic patina unique to your studio practice.
+          </p>
+        </div>
+
+        <!-- Right Column: Material Rows -->
+        <div class="lg:col-span-7 border-t-hairline">
+          
+          <!-- Material Item 1 -->
+          <div class="py-8 border-b-hairline grid grid-cols-1 sm:grid-cols-12 gap-4 items-baseline">
+            <div class="sm:col-span-4 font-mono text-[11px] text-ink-blue uppercase tracking-wider font-bold">
+              SOLID C360 BRASS
+            </div>
+            <div class="sm:col-span-8 font-mono text-[11px] text-ink-secondary leading-[1.9]">
+              Free-cutting brass alloy CNC-milled from extruded bar stock with un-lacquered natural satin polish.
+              <span class="block mt-2 text-ink font-bold font-mono text-[11px] sm:text-right">DENSITY: 8.5 g/cm³</span>
+            </div>
+          </div>
+
+          <!-- Material Item 2 -->
+          <div class="py-8 border-b-hairline grid grid-cols-1 sm:grid-cols-12 gap-4 items-baseline">
+            <div class="sm:col-span-4 font-mono text-[11px] text-ink-blue uppercase tracking-wider font-bold">
+              ENGLISH WALNUT STOCK
+            </div>
+            <div class="sm:col-span-8 font-mono text-[11px] text-ink-secondary leading-[1.9]">
+              Quartersawn hardwood inlay hand-rubbed with organic tung oil and natural beeswax finish.
+              <span class="block mt-2 text-ink font-bold font-mono text-[11px] sm:text-right">SUSTAINABLE HARVEST</span>
+            </div>
+          </div>
+
+          <!-- Material Item 3 -->
+          <div class="py-8 border-b-hairline grid grid-cols-1 sm:grid-cols-12 gap-4 items-baseline">
+            <div class="sm:col-span-4 font-mono text-[11px] text-ink-blue uppercase tracking-wider font-bold">
+              HARDENED CUTTER WHEEL
+            </div>
+            <div class="sm:col-span-8 font-mono text-[11px] text-ink-secondary leading-[1.9]">
+              O1 tool steel micro-wheel heat-treated to 60 HRC to maintain sharp scoring geometry indefinitely.
+              <span class="block mt-2 text-ink font-bold font-mono text-[11px] sm:text-right">HARDNESS: 60 HRC</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SECTION 5: MEASUREMENTS & SPECIFICATIONS ================= -->
+    <section id="measurements" class="py-24 lg:py-36 px-6 lg:px-16 border-b-hairline bg-paper-dark">
+      <div class="max-w-[1000px] mx-auto">
+        
+        <!-- Header -->
+        <div class="mb-12 text-center">
+          <span class="font-mono text-[11px] tracking-[0.1em] text-ink-blue uppercase mb-3 block font-bold">
+            04 / TECHNICAL VERIFICATION
+          </span>
+          <h2 class="font-newsreader text-[32px] sm:text-[44px] text-ink">
+            Precise Physical Specifications
+          </h2>
+        </div>
+
+        <!-- Single Column Specification Table -->
+        <div class="border-t-hairline font-mono text-[11px] lg:text-[12px]">
+          
+          <div class="py-6 border-b-hairline flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+            <span class="text-ink-blue uppercase font-bold tracking-wider sm:w-1/3">OVERALL LENGTH</span>
+            <span class="text-ink-secondary sm:w-1/3">Main calibrated brass beam height</span>
+            <span class="text-ink font-bold tabular-nums text-left sm:text-right sm:w-1/3">250.0 mm</span>
+          </div>
+
+          <div class="py-6 border-b-hairline flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+            <span class="text-ink-blue uppercase font-bold tracking-wider sm:w-1/3">STOCK WIDTH</span>
+            <span class="text-ink-secondary sm:w-1/3">Walnut fence bearing surface</span>
+            <span class="text-ink font-bold tabular-nums text-left sm:text-right sm:w-1/3">120.0 mm</span>
+          </div>
+
+          <div class="py-6 border-b-hairline flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+            <span class="text-ink-blue uppercase font-bold tracking-wider sm:w-1/3">TOTAL INSTRUMENT MASS</span>
+            <span class="text-ink-secondary sm:w-1/3">Unboxed unit weight</span>
+            <span class="text-ink font-bold tabular-nums text-left sm:text-right sm:w-1/3">320 grams</span>
+          </div>
+
+          <div class="py-6 border-b-hairline flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+            <span class="text-ink-blue uppercase font-bold tracking-wider sm:w-1/3">MAXIMUM SCORING REACH</span>
+            <span class="text-ink-secondary sm:w-1/3">Distance from paper edge</span>
+            <span class="text-ink font-bold tabular-nums text-left sm:text-right sm:w-1/3">185.0 mm</span>
+          </div>
+
+          <div class="py-6 border-b-hairline flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+            <span class="text-ink-blue uppercase font-bold tracking-wider sm:w-1/3">SCALE CALIBRATION</span>
+            <span class="text-ink-secondary sm:w-1/3">Dual laser engraving metric/imperial</span>
+            <span class="text-ink font-bold tabular-nums text-left sm:text-right sm:w-1/3">0.5 mm Vernier</span>
+          </div>
+
+          <div class="py-6 border-b-hairline flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+            <span class="text-ink-blue uppercase font-bold tracking-wider sm:w-1/3">ORIGIN OF MANUFACTURE</span>
+            <span class="text-ink-secondary sm:w-1/3">Precision machining & assembly</span>
+            <span class="text-ink font-bold tabular-nums text-left sm:text-right sm:w-1/3">Sheffield, UK</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SECTION 6: CLOSING ================= -->
+    <section id="closing" class="py-24 lg:py-36 px-6 lg:px-16 border-b-hairline bg-paper relative overflow-hidden">
+      <div class="max-w-[1280px] mx-auto flex flex-col items-center text-center">
+        
+        <!-- Closing Headline -->
+        <span class="font-mono text-[11px] tracking-[0.1em] text-ink-blue uppercase mb-4 font-bold">
+          05 / THE CONCLUSION
+        </span>
+        <h2 class="font-newsreader text-[36px] sm:text-[54px] lg:text-[68px] leading-[1.05] text-ink max-w-[840px] mb-6">
+          Invest in tools that outlast trends and <em class="italic text-ink-blue">honor your craft.</em>
+        </h2>
+
+        <!-- Supporting Copy -->
+        <p class="font-mono text-[11px] lg:text-[12px] text-ink-secondary leading-[1.9] max-w-[500px] mb-10">
+          Each instrument is individually serial-numbered and ships in a heavy cotton board presentation box with oil-cloth pouch.
+        </p>
+
+        <!-- Two CTA Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-20">
+          <button onclick="triggerAcquireModal()" class="btn-square-primary">
+            Acquire Precision Gauge — $140
+          </button>
+          <a href="#hero" class="btn-square-secondary">
+            Return to Top
+          </a>
+        </div>
+
+        <!-- Footer Strip -->
+        <div class="w-full border-t-hairline pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 font-mono text-[11px] text-ink-muted">
+          <div>
+            STUDIO N° 01 ARCHIVAL INSTRUMENTS
+          </div>
+          <div>
+            ALL MEASUREMENTS & SPECIFICATIONS VERIFIED
+          </div>
+          <div>
+            © 2026 INDEPENDENT MAKER EDITION
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Final Oversized Wordmark (M A K E R) Closing Spread Anchor -->
+      <div class="w-full px-4 sm:px-8 border-t-hairline pt-6 pb-0 overflow-hidden select-none mt-16">
+        <div id="closing-wordmark" class="w-full flex justify-between items-baseline font-newsreader text-[18vw] leading-[0.72] tracking-[-0.05em] text-ink uppercase font-semibold translate-y-[12%]">
+          <span class="wordmark-char">M</span>
+          <span class="wordmark-char">A</span>
+          <span class="wordmark-char">K</span>
+          <span class="wordmark-char">E</span>
+          <span class="wordmark-char">R</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ACQUIRE / CONCIERGE MODAL -->
+  <div id="acquireModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#141C2B]/60 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-paper border border-ink p-8 max-w-md w-full shadow-2xl relative">
+      <button onclick="closeAcquireModal()" class="absolute top-4 right-4 text-ink hover:text-ink-blue font-mono text-[12px]">
+        [CLOSE X]
+      </button>
+      <span class="font-mono text-[10px] text-ink-blue uppercase tracking-widest block mb-2 font-bold">STUDIO EDITION</span>
+      <h3 class="font-newsreader text-2xl text-ink mb-2">Acquire Precision Gauge</h3>
+      <p class="font-mono text-[11px] text-ink-secondary mb-6 leading-relaxed">
+        Batch N° 04 currently in assembly. Ships within 3 business days worldwide.
+      </p>
+      <form onsubmit="handleAcquireSubmit(event)" class="space-y-4 font-mono text-[11px]">
+        <div>
+          <label class="block text-ink mb-1 uppercase">Shipping Destination</label>
+          <input type="email" required placeholder="name@domain.com" class="w-full px-3 py-2 bg-paper-dark border border-hairline text-ink focus:outline-none focus:border-ink-blue">
+        </div>
+        <button type="submit" class="w-full btn-square-primary py-3">
+          Proceed to Checkout — $140
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-ink text-paper font-mono text-[11px] px-5 py-3 border border-ink-blue opacity-0 pointer-events-none transition-all duration-300">
+    <span id="toastMsg">Action recorded</span>
+  </div>
+
+  <!-- ================= JAVASCRIPT ANIMATION & INTERACTION ENGINE ================= -->
+  <script>
+    /* ==========================================================================
+       1. SCROLL-LINKED ENGINE: TRAVELLING PRODUCT & WORDMARK SPREAD
+       ========================================================================== */
+
+    const product = document.getElementById('travelling-product');
+    const heroWordmark = document.getElementById('hero-wordmark');
+    const closingWordmark = document.getElementById('closing-wordmark');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Define Keyframes for Travelling Product across sections
+    // Coordinates are viewport percentages (0 to 100)
+    const keyframes = [
+      // Hero (0 - 0.20 progress)
+      { progress: 0.00, x: 72, y: 14, rotate: -12, scale: 1.10, opacity: 1 },
+      { progress: 0.18, x: 68, y: 35, rotate: 5,   scale: 1.00, opacity: 1 },
+      
+      // Argument Section (0.20 - 0.45 progress)
+      { progress: 0.28, x: 14, y: 22, rotate: 22,  scale: 0.88, opacity: 1 },
+      { progress: 0.42, x: 78, y: 48, rotate: -8,  scale: 0.95, opacity: 1 },
+      
+      // Demonstration Section (0.45 - 0.70 progress)
+      { progress: 0.55, x: 82, y: 28, rotate: -25, scale: 0.82, opacity: 1 },
+      { progress: 0.68, x: 12, y: 62, rotate: 14,  scale: 0.78, opacity: 1 },
+      
+      // Materials Section (0.70 - 0.88 progress)
+      { progress: 0.78, x: 70, y: 38, rotate: -10, scale: 0.70, opacity: 0.85 },
+      { progress: 0.88, x: 50, y: 80, rotate: 0,   scale: 0.50, opacity: 0 }
+    ];
+
+    // Helper: Interpolate between two values
+    function lerp(start, end, factor) {
+      return start + (end - start) * factor;
+    }
+
+    // Update Travelling Product Position & Wordmark Transformations on Scroll
+    function updateScrollAnimations() {
+      if (prefersReducedMotion) return;
+
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollFraction = Math.max(0, Math.min(1, scrollTop / docHeight));
+
+      /* --- Travelling Product Interpolation --- */
+      if (scrollFraction <= keyframes[keyframes.length - 1].progress) {
+        product.style.visibility = 'visible';
+
+        // Find surrounding keyframe segment
+        let segmentIndex = 0;
+        for (let i = 0; i < keyframes.length - 1; i++) {
+          if (scrollFraction >= keyframes[i].progress && scrollFraction <= keyframes[i + 1].progress) {
+            segmentIndex = i;
+            break;
+          }
+        }
+
+        const k1 = keyframes[segmentIndex];
+        const k2 = keyframes[segmentIndex + 1];
+        const segmentProgress = (scrollFraction - k1.progress) / (k2.progress - k1.progress);
+
+        // Smooth Ease Curve (cubic bezier approximation)
+        const easedProgress = segmentProgress < 0.5 
+          ? 2 * segmentProgress * segmentProgress 
+          : -1 + (4 - 2 * segmentProgress) * segmentProgress;
+
+        // Calculate Interpolated State
+        const currentX = lerp(k1.x, k2.x, easedProgress);
+        const currentY = lerp(k1.y, k2.y, easedProgress);
+        const currentRot = lerp(k1.rotate, k2.rotate, easedProgress);
+        const currentScale = lerp(k1.scale, k2.scale, easedProgress);
+        const currentOpacity = lerp(k1.opacity, k2.opacity, easedProgress);
+
+        // Convert Viewport percentages to Pixels
+        const pixelX = (currentX / 100) * window.innerWidth;
+        const pixelY = (currentY / 100) * window.innerHeight;
+
+        product.style.transform = `translate3d(${pixelX}px, ${pixelY}px, 0) rotate(${currentRot}deg) scale(${currentScale})`;
+        product.style.opacity = currentOpacity;
+      } else {
+        product.style.opacity = '0';
+        product.style.visibility = 'hidden';
+      }
+
+      /* --- Hero Wordmark Spread & Sink Animation --- */
+      const heroSectionHeight = document.getElementById('hero').offsetHeight;
+      const heroScrollFraction = Math.max(0, Math.min(1, scrollTop / (heroSectionHeight * 0.8)));
+
+      if (heroWordmark) {
+        const chars = heroWordmark.querySelectorAll('.wordmark-char');
+        chars.forEach((char, index) => {
+          // Calculate outward spread relative to center (Index 2 is 'K')
+          const offsetFromCenter = index - 2; 
+          const translateX = offsetFromCenter * heroScrollFraction * 60; // Spread outward
+          const translateY = heroScrollFraction * 70; // Sink downward
+
+          char.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
+        });
+      }
+
+      /* --- Closing Wordmark Spread Animation --- */
+      if (closingWordmark) {
+        const closingRect = closingWordmark.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+
+        if (closingRect.top < viewportHeight) {
+          const closingProgress = Math.max(0, Math.min(1, (viewportHeight - closingRect.top) / viewportHeight));
+          const chars = closingWordmark.querySelectorAll('.wordmark-char');
+
+          chars.forEach((char, index) => {
+            const offsetFromCenter = index - 2;
+            const translateX = (1 - closingProgress) * offsetFromCenter * 40;
+            const translateY = (1 - closingProgress) * 50;
+
+            char.style.transform = `translate3d(${translateX}px, ${translateY}px, 0)`;
+          });
+        }
+      }
+    }
+
+    // High performance RAF Scroll loop
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateScrollAnimations();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Initial positioning on page load & resize
+    window.addEventListener('resize', updateScrollAnimations);
+    window.addEventListener('DOMContentLoaded', updateScrollAnimations);
+
+    /* ==========================================================================
+       2. SECTION 3: INTERACTIVE SVG DRAWING & VARIANT PICKER ENGINE
+       ========================================================================== */
+
+    const pathDbl = document.getElementById('svg-draw-path');
+
+    // Variant Data definitions
+    const variantData = {
+      grid: {
+        path: "M120 90 H480 M120 120 H480 M120 150 H480 M120 180 H480 M120 210 H480 M120 240 H480 M120 270 H480",
+        strokeWidth: "1.5",
+        fact1: "0.12 mm Blind Indentation",
+        fact2: "5.0 mm Equal Intervallic",
+        fact3: "120gsm – 300gsm Cotton"
+      },
+      margin: {
+        path: "M160 50 V290 M440 50 V290 M160 120 H440 M160 240 H440",
+        strokeWidth: "2.0",
+        fact1: "0.20 mm Crisp Crease",
+        fact2: "18.0 mm Outer Margin",
+        fact3: "180gsm – 400gsm Heavy Stock"
+      },
+      border: {
+        path: "M110 50 H490 V290 H110 Z M120 60 H480 V280 H120 Z",
+        strokeWidth: "1.0",
+        fact1: "0.08 mm Micro Trim Line",
+        fact2: "Full Folio Outer Border",
+        fact3: "Archival Vellum & Smooth Rag"
+      }
+    };
+
+    // Trigger SVG Drawing when Demonstration section enters viewport
+    if (pathDbl) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Measure length dynamically
+            const length = pathDbl.getTotalLength();
+            pathDbl.style.strokeDasharray = length;
+            pathDbl.style.strokeDashoffset = length;
+            
+            // Trigger animation frame
+            setTimeout(() => {
+              pathDbl.classList.add('drawn');
+            }, 50);
+
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      observer.observe(document.getElementById('demonstration'));
+    }
+
+    // Switch Layout Variant
+    function setVariant(variantKey) {
+      const data = variantData[variantKey];
+      if (!data) return;
+
+      // Update Button ARIA States
+      document.querySelectorAll('.variant-btn').forEach(btn => btn.setAttribute('aria-pressed', 'false'));
+      const activeBtn = document.getElementById(`var-${variantKey}`);
+      if (activeBtn) activeBtn.setAttribute('aria-pressed', 'true');
+
+      // Update Path Geometry and Re-trigger Draw
+      if (pathDbl) {
+        pathDbl.classList.remove('drawn');
+        pathDbl.setAttribute('d', data.path);
+        pathDbl.setAttribute('stroke-width', data.strokeWidth);
+
+        const newLength = pathDbl.getTotalLength();
+        pathDbl.style.strokeDasharray = newLength;
+        pathDbl.style.strokeDashoffset = newLength;
+
+        setTimeout(() => {
+          pathDbl.classList.add('drawn');
+        }, 50);
+      }
+
+      // Update Factual Text
+      document.getElementById('fact-1').innerText = data.fact1;
+      document.getElementById('fact-2').innerText = data.fact2;
+      document.getElementById('fact-3').innerText = data.fact3;
+    }
+
+    /* ==========================================================================
+       3. MODAL & TOAST UI HELPERS
+       ========================================================================== */
+
+    function triggerAcquireModal() {
+      const modal = document.getElementById('acquireModal');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    function closeAcquireModal() {
+      const modal = document.getElementById('acquireModal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    function handleAcquireSubmit(e) {
+      e.preventDefault();
+      closeAcquireModal();
+      showToast('RESERVATION CONFIRMED — CHECK EMAIL FOR INVOICE');
+    }
+  </script>
+
+</body>
+</html>
