@@ -1,0 +1,224 @@
+# Create an Editorial Cinematic Landing Page
+
+Design and develop a premium, minimalist, high-end cinematic landing page with an **Editorial Cinematic / Minimalist Editorial** aesthetic. The overall experience should feel sophisticated, luxurious, immersive, and editorial, inspired by high-fashion campaigns and premium creative studios.
+
+## 1. Overall Art Direction
+- Minimalist, elegant, and cinematic.
+- Full-screen background video as the main visual element.
+- Deep navy, black, and white color palette.
+- Strong typography hierarchy with generous whitespace.
+- Clean, balanced composition with precise alignment.
+- Avoid unnecessary decorative elements, excessive gradients, or visual clutter.
+- Prioritize visual storytelling and typography.
+
+## 2. Background Video
+Use this video as the full-bleed hero background:
+
+https://designerstephen.github.io/public-assets/videos/serene-art-hero.mp4
+
+Requirements:
+- Cover the entire viewport (100vw × 100vh).
+- Use `object-fit: cover` and `object-position: center`.
+- Autoplay, muted, loop, and playsInline.
+- Add a subtle dark overlay with approximately 20% opacity when needed for text readability.
+- Use a solid background fallback: HSL(201, 100%, 13%).
+- Ensure smooth loading and prevent layout shifts.
+
+## 3. Typography
+
+**Display Font: Instrument Serif**
+- Font weight: 400.
+- H1 desktop: 80px.
+- H1 mobile: 48px.
+- Line height: 0.95.
+- Letter spacing: -2.46px.
+- Use elegant italic or non-italic emphasis through `<em>` styling as appropriate.
+- Maintain a sophisticated editorial appearance.
+
+**Body Font: Inter**
+- Font weight: 400 for paragraphs.
+- Font weight: 500 for navigation and buttons.
+- Navigation: 14px.
+- Supporting text: 18px.
+- Buttons: 14–16px.
+
+Import both fonts using Google Fonts.
+
+## 4. Color System
+
+- Primary text: #0f172a.
+- Muted text: HSL(215, 25%, 32%).
+- Primary button background: #000000.
+- Primary button text: #ffffff.
+- Background fallback: HSL(201, 100%, 13%).
+
+Maintain strong contrast and readability across all screen sizes.
+
+## 5. Navigation Bar
+
+Create a responsive three-column navigation layout.
+
+Container:
+- Maximum width: 1280px.
+- Horizontal padding: 32px.
+- Vertical padding: 24px.
+- Display: CSS Grid with three equal columns.
+- Align items vertically centered.
+
+**Left column: Brand**
+- Brand logo in Instrument Serif.
+- Font size: 30px.
+- Include a registered trademark symbol (®) in superscript.
+
+**Center column: Navigation**
+- Four horizontally aligned navigation links.
+- Inter, 14px, weight 500.
+- Gap: 40px.
+- Center aligned.
+- Hide navigation links on mobile.
+
+**Right column: CTA**
+- Pill-shaped black button.
+- White text.
+- Label: "Find my dream".
+- Padding: 10px 24px.
+- Border radius: 9999px.
+
+## 6. Hero Section
+
+Create a full-screen hero section using `min-height: 100svh`.
+
+Center the content both vertically and horizontally.
+
+Content container:
+- Maximum width: 1280px.
+- Text alignment: center.
+- Flex direction: column.
+- Align items: center.
+
+**Main Heading (H1)**
+- Instrument Serif, 80px desktop and 48px mobile.
+- Font weight: 400.
+- Line height: 0.95.
+- Letter spacing: -2.46px.
+- Use carefully selected line breaks to create a balanced editorial composition.
+- Apply stylistic emphasis to selected words.
+
+**Supporting Paragraph**
+- Inter, 18px.
+- Maximum width: 670px.
+- Line height: 1.625.
+- Color: HSL(215, 25%, 32%).
+- Center aligned.
+
+**Main CTA**
+- Label: "Find my dream".
+- Black background with white text.
+- Fully rounded pill shape.
+- Padding: 20px 56px.
+- Font: Inter, 16px, weight 500.
+- Position approximately 48px below the supporting paragraph.
+
+## 7. Animations & Micro-interactions
+
+Use restrained, elegant animations. The experience should feel smooth and premium rather than flashy.
+
+**Fade-and-Rise Entrance Animation**
+
+Create the following keyframe:
+
+```css
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+```
+
+Animation settings:
+- Duration: 0.8 seconds.
+- Timing function: ease-out.
+- Fill mode: both.
+
+Apply staggered animation delays:
+- H1: 0 seconds.
+- Paragraph: 0.2 seconds.
+- CTA: 0.4 seconds.
+
+**Button Hover**
+- Transform: scale(1.03).
+- Transition: 0.3 seconds ease-in-out.
+- Keep the interaction subtle and smooth.
+
+Respect `prefers-reduced-motion` for accessibility.
+
+## 8. Pill Action Button Component
+
+Create a reusable button component with two variants.
+
+Small variant:
+- Padding: 10px 24px.
+- Font size: 14px.
+
+Hero variant:
+- Padding: 20px 56px.
+- Font size: 16px.
+
+Shared styling:
+- Background: #000000.
+- Text: #ffffff.
+- Border radius: 9999px.
+- Font weight: 500.
+- Hover scale: 1.03.
+- Transition: 200–300ms ease-in-out.
+
+## 9. Responsive Design
+
+Desktop:
+- Preserve the three-column navigation.
+- H1 at 80px.
+- Maintain generous whitespace.
+
+Tablet:
+- Reduce heading size proportionally.
+- Adjust horizontal padding.
+- Preserve centered composition.
+
+Mobile:
+- H1 at 48px.
+- Hide center navigation links.
+- Keep the brand and CTA visible.
+- Reduce button dimensions appropriately.
+- Ensure text never overlaps or becomes difficult to read.
+- Maintain the cinematic full-screen video experience.
+
+## 10. Technical Requirements
+
+- Build with clean, reusable components.
+- Use semantic HTML.
+- Use CSS animations and transitions.
+- Ensure responsive behavior across desktop, tablet, and mobile.
+- Optimize video loading and performance.
+- Include a graceful fallback if the video fails to load.
+- Ensure all buttons and navigation links are functional.
+- Maintain accessibility and sufficient color contrast.
+
+## 11. Final Design Direction
+
+The final result should resemble a premium luxury editorial website: understated, cinematic, elegant, and visually immersive.
+
+The background video should establish the atmosphere, while the Instrument Serif typography creates the identity.
+
+**IMPORTANT DESIGN DETAILS:**
+1. Do not compromise the exact H1 letter spacing of -2.46px.
+2. Preserve the Instrument Serif and Inter font pairing.
+3. Keep the fade-and-rise entrance animations subtle.
+4. Avoid unnecessary UI components.
+5. Maintain a strong visual hierarchy.
+6. Ensure perfect text legibility over the video.
+7. Prioritize a polished, production-quality finish over a generic template aesthetic.
