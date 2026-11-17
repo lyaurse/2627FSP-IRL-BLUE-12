@@ -1,0 +1,623 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Little Lab — Team 12</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --paper: #EFE9DD;
+  --paper-dark: #E5DED0;
+  --ink: #141C2B;
+  --muted: #767E8C;
+  --blue: #2C4A8F;
+  --line: rgba(20,28,43,.22);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Courier Prime', monospace;
+}
+header {
+  padding: 22px 7%;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+.logo { color: var(--blue); font-weight: bold; }
+nav { display:flex; gap:25px; }
+nav a { color: var(--ink); text-decoration:none; }
+nav a:hover { color:var(--blue); }
+
+.hero {
+  padding: 105px 9% 90px;
+  min-height: 500px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+.eyebrow {
+  color:var(--blue);
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+h1,h2,h3 {
+  font-family:'Newsreader',serif;
+  font-weight:400;
+}
+h1 {
+  font-size:clamp(52px,8vw,105px);
+  line-height:.98;
+  max-width:850px;
+  margin:25px 0;
+}
+.hero p {
+  color:var(--muted);
+  max-width:470px;
+  line-height:1.8;
+  font-size:13px;
+}
+.primary-btn {
+  display:inline-block;
+  margin-top:25px;
+  padding:14px 22px;
+  background:var(--blue);
+  color:white;
+  text-decoration:none;
+  font-size:11px;
+  letter-spacing:1px;
+  width:max-content;
+}
+.hero-mark {
+  position:absolute;
+  right:9%;
+  bottom:65px;
+  width:130px;
+  height:130px;
+  border:1px solid var(--blue);
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:var(--blue);
+  font-family:'Newsreader',serif;
+  font-size:38px;
+  transform:rotate(-12deg);
+}
+section { padding:85px 9%; }
+.section-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  border-bottom:1px solid var(--line);
+  padding-bottom:18px;
+  margin-bottom:35px;
+}
+.section-top h2 {
+  font-size:clamp(35px,5vw,58px);
+  margin:0;
+}
+.small-label {
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:1.5px;
+}
+
+/* GAME */
+#game-section { background:var(--paper-dark); }
+.game-intro {
+  max-width:650px;
+  line-height:1.8;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:35px;
+}
+.lab {
+  border:1px solid var(--ink);
+  padding:30px;
+  min-height:390px;
+  position:relative;
+}
+.lab-top {
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--line);
+  padding-bottom:15px;
+  font-size:10px;
+  letter-spacing:1px;
+}
+.lab-workspace {
+  min-height:245px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:35px;
+  flex-wrap:wrap;
+  padding:35px 10px;
+}
+.beaker {
+  width:100px;
+  height:130px;
+  border:3px solid var(--blue);
+  border-top:0;
+  border-radius:0 0 25px 25px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.25s;
+  background:rgba(255,255,255,.18);
+}
+.beaker:hover { transform:translateY(-7px); }
+.liquid {
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:35%;
+  background:#8CA8C9;
+  transition:height .5s, background .5s;
+}
+.beaker[data-kind="acid"] .liquid { background:#D99B87; }
+.beaker[data-kind="base"] .liquid { background:#A3B88C; }
+.beaker[data-kind="water"] .liquid { background:#8CA8C9; }
+.beaker-label {
+  text-align:center;
+  font-size:10px;
+  margin-top:12px;
+}
+.lab-item { text-align:center; }
+.lab-instruction {
+  text-align:center;
+  font-family:'Newsreader',serif;
+  font-size:23px;
+  margin:0 0 10px;
+}
+.lab-feedback {
+  text-align:center;
+  font-size:11px;
+  color:var(--blue);
+  min-height:22px;
+  line-height:1.6;
+}
+.lab-controls {
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.lab-controls button {
+  background:transparent;
+  border:1px solid var(--blue);
+  color:var(--blue);
+  padding:12px 17px;
+  font:11px 'Courier Prime',monospace;
+  cursor:pointer;
+}
+.lab-controls button:hover {
+  background:var(--blue);
+  color:white;
+}
+.lab-controls button:disabled {
+  opacity:.4;
+  cursor:not-allowed;
+}
+.lab-note {
+  font-size:10px;
+  color:var(--muted);
+  text-align:center;
+  margin-top:20px;
+}
+
+/* TEAM */
+.team-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:35px;
+}
+.member {
+  border-top:1px solid var(--ink);
+  padding-top:20px;
+}
+.member-number {
+  color:var(--blue);
+  font-size:10px;
+}
+.member h3 {
+  font-size:34px;
+  margin:15px 0 5px;
+}
+.member-role {
+  color:var(--muted);
+  font-size:10px;
+  min-height:30px;
+  line-height:1.6;
+}
+.member p {
+  font-size:11px;
+  line-height:1.8;
+  color:var(--muted);
+}
+.profile-btn {
+  margin-top:12px;
+  background:none;
+  border:0;
+  border-bottom:1px solid var(--blue);
+  padding:8px 0;
+  color:var(--blue);
+  font:11px 'Courier Prime',monospace;
+  cursor:pointer;
+}
+.profile-details {
+  display:none;
+  margin-top:20px;
+  border-top:1px solid var(--line);
+  padding-top:15px;
+  font-size:11px;
+  line-height:1.8;
+}
+.profile-details.open { display:block; }
+.profile-details strong {
+  display:block;
+  color:var(--blue);
+  margin-top:14px;
+  font-size:10px;
+  letter-spacing:1px;
+}
+footer {
+  padding:55px 9%;
+  background:var(--ink);
+  color:var(--paper);
+}
+footer h2 {
+  font-size:48px;
+  margin:15px 0;
+}
+footer p {
+  font-size:11px;
+  line-height:1.8;
+  color:#B7BECA;
+}
+.footer-bottom {
+  border-top:1px solid rgba(255,255,255,.25);
+  padding-top:20px;
+  margin-top:40px;
+  font-size:10px;
+  color:#B7BECA;
+  display:flex;
+  justify-content:space-between;
+}
+
+@media(max-width:700px) {
+  header { padding:18px 5%; }
+  nav { gap:12px; font-size:9px; }
+  .hero { padding:80px 7%; }
+  .hero-mark { opacity:.2; right:5%; }
+  section { padding:65px 7%; }
+  .team-grid { grid-template-columns:1fr; gap:30px; }
+  .lab { padding:18px; }
+  .lab-workspace { gap:18px; }
+  .footer-bottom { flex-direction:column; gap:10px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">THE LITTLE LAB / 12</div>
+  <nav>
+    <a href="#game-section">THE LAB</a>
+    <a href="#team">THE TEAM</a>
+    <a href="#about">ABOUT</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="eyebrow">A little space for curious minds · 2026/27</div>
+  <h1>Curiosity is<br>our favourite<br>experiment.</h1>
+  <p>
+    Welcome to our little corner of science.
+    Explore, experiment, make discoveries, and get to know
+    the minds behind the project.
+  </p>
+  <a class="primary-btn" href="#game-section">ENTER THE LAB ↗</a>
+  <div class="hero-mark">12°</div>
+</section>
+
+<section id="game-section">
+  <div class="section-top">
+    <div>
+      <div class="eyebrow">01 — Interactive experience</div>
+      <h2>The Little Lab</h2>
+    </div>
+    <div class="small-label">EXPERIMENT NO. 001</div>
+  </div>
+
+  <p class="game-intro">
+    Welcome, researcher. This is your playground.
+    Pick up the ingredients, combine them, and see what happens.
+    There are no grades here — just a little curiosity.
+  </p>
+
+  <div class="lab">
+    <div class="lab-top">
+      <span>EXPERIMENT TABLE</span>
+      <span id="lab-status">STATUS: READY</span>
+    </div>
+
+    <p class="lab-instruction" id="instruction">
+      What happens when you mix two things?
+    </p>
+
+    <div class="lab-workspace">
+      <div class="lab-item">
+        <div class="beaker" data-kind="acid" onclick="selectIngredient('acid')">
+          <div class="liquid"></div>
+        </div>
+        <div class="beaker-label">PINK SOLUTION</div>
+      </div>
+
+      <div class="lab-item">
+        <div class="beaker" data-kind="base" onclick="selectIngredient('base')">
+          <div class="liquid"></div>
+        </div>
+        <div class="beaker-label">GREEN SOLUTION</div>
+      </div>
+
+      <div class="lab-item">
+        <div class="beaker" data-kind="water" onclick="selectIngredient('water')">
+          <div class="liquid"></div>
+        </div>
+        <div class="beaker-label">BLUE SOLUTION</div>
+      </div>
+    </div>
+
+    <div class="lab-feedback" id="feedback">
+      Click a beaker to add an ingredient to your experiment.
+    </div>
+
+    <div class="lab-controls">
+      <button onclick="mixIngredients()">MIX INGREDIENTS ↗</button>
+      <button onclick="resetLab()">RESET TABLE</button>
+    </div>
+
+    <div class="lab-note">
+      TRY DIFFERENT COMBINATIONS. DISCOVER YOUR OWN RESULTS.
+    </div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="section-top">
+    <div>
+      <div class="eyebrow">02 — The people behind it</div>
+      <h2>Meet the team.</h2>
+    </div>
+    <div class="small-label">THREE CURIOUS MINDS</div>
+  </div>
+
+  <div class="team-grid">
+
+    <article class="member">
+      <div class="member-number">MEMBER 01 / YLS</div>
+      <h3>Yohana Laurel<br>Setiawan</h3>
+      <div class="member-role">Biotechnology & Food Technology Enthusiast</div>
+      <p>
+        Curious about the intersection of biology, chemistry,
+        food technology, and scientific innovation.
+      </p>
+      <button class="profile-btn" onclick="toggleProfile('yohana',this)">
+        VIEW PROFILE +
+      </button>
+      <div class="profile-details" id="yohana">
+        <strong>EDUCATION</strong>
+        SDK 5 BPK Penabur Guntur<br>
+        SMP BPK Penabur Holis<br>
+        SMA BPK Penabur Holis, Bandung
+
+        <strong>ACCOMPLISHMENTS</strong>
+        Food Technology Essay<br>
+        Champion in IT Competition<br>
+        Singing Competition Recognition
+
+        <strong>SKILLS & INTERESTS</strong>
+        Research curiosity, critical thinking, leadership,
+        teamwork, adaptability, communication, English,
+        creativity, and scientific exploration.
+      </div>
+    </article>
+
+    <article class="member">
+      <div class="member-number">MEMBER 02 / JLS</div>
+      <h3>Jovanka Leony<br>Singgih</h3>
+      <div class="member-role">Mathematics Enthusiast | Leadership & Innovation</div>
+      <p>
+        Interested in mathematics, logical reasoning,
+        leadership, and creative scientific applications.
+      </p>
+      <button class="profile-btn" onclick="toggleProfile('jovanka',this)">
+        VIEW PROFILE +
+      </button>
+      <div class="profile-details" id="jovanka">
+        <strong>EDUCATION</strong>
+        SDK BPK Penabur Cimahi<br>
+        SMPK 5 BPK Penabur<br>
+        SMA BPK Penabur Holis
+
+        <strong>ACCOMPLISHMENTS</strong>
+        YCMS Award Winner<br>
+        Kombucha SCOBY skincare gel mask using
+        Kombucha bacterial cellulose
+
+        <strong>SKILLS & INTERESTS</strong>
+        Analytical thinking, leadership, confidence,
+        discipline, adaptability, scientific curiosity,
+        teamwork, and problem-solving.
+      </div>
+    </article>
+
+    <article class="member">
+      <div class="member-number">MEMBER 03 / MC</div>
+      <h3>Marta<br>Caroline</h3>
+      <div class="member-role">Chemistry & Food Science Enthusiast</div>
+      <p>
+        Exploring chemistry, food science, research,
+        and the ways science can improve everyday life.
+      </p>
+      <button class="profile-btn" onclick="toggleProfile('marta',this)">
+        VIEW PROFILE +
+      </button>
+      <div class="profile-details" id="marta">
+        <strong>EDUCATION</strong>
+        SD Angkasa<br>
+        SMP Angkasa<br>
+        SMA BPK Penabur Holis
+
+        <strong>ACCOMPLISHMENTS</strong>
+        Food Science Essay<br>
+        Champion in Chemistry Competition<br>
+        Scientific Exploration
+
+        <strong>SKILLS & INTERESTS</strong>
+        Chemistry, food science, critical thinking,
+        research and writing, empathy, adaptability,
+        collaboration, and responsibility.
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section id="about" style="background:var(--paper-dark)">
+  <div class="eyebrow">03 — What brings us together</div>
+  <h2 style="font-size:clamp(40px,6vw,68px);max-width:700px">
+    Different perspectives.<br>
+    One shared curiosity.
+  </h2>
+  <p style="max-width:620px;color:var(--muted);font-size:12px;line-height:2">
+    We believe that meaningful discoveries begin with questions.
+    Through collaboration, creativity, and continuous learning,
+    we hope to explore ideas and turn curiosity into something
+    that matters.
+  </p>
+</section>
+</main>
+
+<footer>
+  <div class="eyebrow">TEAM 12 — 2026/27</div>
+  <h2>Stay curious.</h2>
+  <p>
+    Keep asking questions.<br>
+    Keep exploring possibilities.<br>
+    Keep making discoveries.
+  </p>
+  <div class="footer-bottom">
+    <span>THE LITTLE LAB</span>
+    <span>MADE WITH CURIOSITY · BANDUNG</span>
+  </div>
+</footer>
+
+<script>
+let selected = [];
+
+function selectIngredient(kind) {
+  if (selected.length >= 2) {
+    document.getElementById('feedback').textContent =
+      'Mix your ingredients first, or reset the table!';
+    return;
+  }
+
+  selected.push(kind);
+  const labels = {
+    acid: 'Pink solution',
+    base: 'Green solution',
+    water: 'Blue solution'
+  };
+
+  document.getElementById('feedback').textContent =
+    labels[kind] + ' added! ' + selected.length + ' of 2 ingredients selected.';
+
+  document.querySelectorAll('.beaker').forEach(beaker => {
+    beaker.style.opacity = selected.includes(beaker.dataset.kind)
+      ? '1' : '.55';
+  });
+
+  document.getElementById('lab-status').textContent =
+    'STATUS: ' + selected.length + '/2 SELECTED';
+}
+
+function mixIngredients() {
+  const feedback = document.getElementById('feedback');
+  const instruction = document.getElementById('instruction');
+
+  if (selected.length !== 2) {
+    feedback.textContent = 'Choose two ingredients before mixing!';
+    return;
+  }
+
+  const pair = [...selected].sort().join('-');
+
+  const outcomes = {
+    'acid-base': {
+      title: 'A little reaction!',
+      text: 'You combined two different solutions. In a real lab, an acid and a base can react through neutralization.'
+    },
+    'acid-water': {
+      title: 'Dilution time!',
+      text: 'Water dilutes the solution, changing its concentration. Small changes can make a big difference.'
+    },
+    'base-water': {
+      title: 'A new concentration!',
+      text: 'Adding water dilutes the base solution. The amount of solute stays the same, but the concentration changes.'
+    }
+  };
+
+  const result = outcomes[pair];
+  instruction.textContent = result.title;
+  feedback.textContent = result.text;
+  document.getElementById('lab-status').textContent = 'STATUS: MIXED';
+
+  document.querySelectorAll('.liquid').forEach(liquid => {
+    liquid.style.height = '70%';
+  });
+}
+
+function resetLab() {
+  selected = [];
+  document.getElementById('instruction').textContent =
+    'What happens when you mix two things?';
+  document.getElementById('feedback').textContent =
+    'Click a beaker to add an ingredient to your experiment.';
+  document.getElementById('lab-status').textContent = 'STATUS: READY';
+
+  document.querySelectorAll('.beaker').forEach(beaker => {
+    beaker.style.opacity = '1';
+  });
+  document.querySelectorAll('.liquid').forEach(liquid => {
+    liquid.style.height = '35%';
+  });
+}
+
+function toggleProfile(id, button) {
+  const panel = document.getElementById(id);
+  const isOpen = panel.classList.toggle('open');
+  button.textContent = isOpen ? 'CLOSE PROFILE −' : 'VIEW PROFILE +';
+}
+</script>
+
+</body>
+</html>
